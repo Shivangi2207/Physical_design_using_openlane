@@ -314,12 +314,36 @@ The two most important parameters are:
 
 # Floor planning
 
-Pre-placed Cells:
+Pre-placed Cells : Pre-placed cells (or pre-placed blocks) in ASIC (Application-Specific Integrated Circuit) design refer to predefined and fixed blocks of logic or circuitry that are manually 
+                   placed in specific locations on the semiconductor chip's layout before the automated placement and routing process.These cells are placed manually by the chip designer or through                    automated tools. Since these IP's are placed before automated Placement and Routing, these are reffered to as Pre-placed cells.
+  
+  ![Screenshot from 2023-09-10 21-51-53](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/b03cf105-c40d-4c12-b9a1-7a6c3b48d55c)
+
+                   
+Decoupling capacitors: Pre-placed cells must then be surrounded with decoupling capacitors (decaps). The resistances and capacitances associated with long wire lengths can cause the power supply  
+                       voltage to drop significantly before reaching the logic circuits.Their role is to decouple the circuit from power supply by supplying the necessary amount of current to the                          circuit. They pervent crosstalk and enable local communication.
+
+![Screenshot from 2023-09-10 22-22-04](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/1caeeebb-5a49-4f2b-83bc-b44365ed4898)
+
+Power Planning:Let us suppose that there are multiple macros in a chip and output changes from '1' to '0', then it discharged into ground line because of which we can see ground bumpp. Similarly  
+              when it is charged from 0 to 1 we can see voltage drop in power supply.Hence to resolve this we can have multiple supply line for vdd as well as ground as shown below:
+
+
+![Screenshot from 2023-09-10 22-28-53](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/c4702946-dc09-4e1d-b727-87cb66dc3295)
+
+Pin Placement : The netlist defines connectivity between logic gates. The place between the core and die is utilised for placing pins. The connectivity information coded in either VHDL or Verilog                  is used to determine the position of I/O pads of various pins. The input, output and Clock pins are placed optimally such that there is less complication in routing or optimised                     delay.
+![Screenshot from 2023-09-10 22-39-26](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/6defb5df-c7ce-4112-be5f-c90029002da8)
+
+The Clock port are bigger than the normal I/O pins because of it's continuous use and larger area offers less resistance.
+Final design:
+![Screenshot from 2023-09-11 01-32-10](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/8d8c13a0-78ab-4664-b9f3-d5a945aa7cb9)
+
 
 
 
 
 </details>
+<details></details>
 
 
 </details>
