@@ -303,7 +303,7 @@ Flop ratio = (No.of D flipflops)/(Total no.of cells) =1596/10104 = 0.1579
 
 ## Day 2
 
-<details><summary>Good flooplan vs Bad Floorplan and introduction to library cells </summary>
+## Good flooplan vs Bad Floorplan and introduction to library cells 
 <details><summary>Chip floorplanning consideration </summary>
 The two most important parameters are:
 
@@ -343,7 +343,20 @@ Final design:
 
 
 </details>
-<details></details>
+<details><summary>Floorplan run on OpenLANE & view of the layout in Magic</summary>
+
+# To run the picorv32a floorplan in openLANE:
+```
+run_floorplan
+```
+![Screenshot from 2023-09-12 22-19-38](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/e7fac0b8-738a-4e28-9543-6c6b3f24e484)
 
 
 </details>
+
+<details><summary>Library Binding and Placement</summary></details>
+
+
+</details>
+
+## Day 3
