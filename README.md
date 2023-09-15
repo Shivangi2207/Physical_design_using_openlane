@@ -312,6 +312,19 @@ The two most important parameters are:
 - Aspect Ratio : Aspect ratio will decide the size and shape of the chip. It is the ratio between horizontal routing resources to vertical routing resources (or) ratio of height and width. Aspect
                  ratio = width/height.Aspect ratio of 1 signifies that the die is of square shape and any other value other than 1 signifies that the die is rectangular shape.
 
+```
+
+Utilisation Factor =  Area occupied by netlist
+                     __________________________
+                         Total area of core
+                         
+
+Aspect Ratio =  Height
+               ________
+                Width
+                
+  ```
+
 # Floor planning
 
 Pre-placed Cells : Pre-placed cells (or pre-placed blocks) in ASIC (Application-Specific Integrated Circuit) design refer to predefined and fixed blocks of logic or circuitry that are manually 
@@ -349,12 +362,30 @@ Final design:
 ```
 run_floorplan
 ```
-![Screenshot from 2023-09-12 22-19-38](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/e7fac0b8-738a-4e28-9543-6c6b3f24e484)
+
+To view the floorplan, Magic is invoked after moving to the results/floorplan directory:
+![Screenshot from 2023-09-15 23-33-03](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/2514b799-694c-46e3-88fb-4cf1e1af9446)
+
+
+```
+magic  /home/shivangi/.volare/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.min.lef def read picorv32a.def 
+```
+![Screenshot from 2023-09-15 23-32-03](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/8afd4cec-b21a-4c0f-8b03-4d3b5e4efb09)
+
+
+![Screenshot from 2023-09-15 23-08-12](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/614db525-5ff8-4215-ba78-6912f2071e92)
+
+
 
 
 </details>
 
-<details><summary>Library Binding and Placement</summary></details>
+<details><summary>Library Binding and Placement</summary>
+ 
+  # Placement Optimization
+![Screenshot from 2023-09-11 01-32-10](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/55e89465-9eb4-4887-a5c7-338ea3554a81)
+
+</details>
 
 
 </details>
