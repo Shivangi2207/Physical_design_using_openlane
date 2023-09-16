@@ -945,4 +945,233 @@ Modified layout
 </details>
 
 # Day 4
-# Pre-layout Timing Analysis And Importance Of Good Clock Tree
+## Pre-layout Timing Analysis And Importance Of Good Clock Tree
+
+<details><summary>Timing Modelling Using Delay Tables</summary>
+To ensure that the CMOS Inverter's A and Y ports, situated on the li1 layer, adhere to the port requirements, it's crucial to confirm that they are precisely located at the intersection of horizontal and vertical tracks. This verification can be accomplished by consulting the "tracks.info" file, which furnishes details regarding track spacing and orientation.
+
+![Screenshot from 2023-09-16 23-53-08](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/313e60c7-c1a6-4a1a-962e-de4eea965b21)
+
+
+
+To guarantee that the ports align precisely at the intersection point, it's necessary to synchronize the grid spacing in Magic (tkcon) with the X and Y values of the li1 layer. This grid-track alignment can be established using the following command:
+```
+grid 0.46um 0.34um 0.23um 0.17um
+```
+![Screenshot from 2023-09-16 23-47-14](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/5d239215-6bdc-43e9-a0f1-c0090ffe1d56)
+
+# Creating port defination
+After completing the layout, the next step involves generating an LEF (Library Exchange Format) file for the cell. During this process, it is crucial to configure properties and definitions for the cell's pins to assist the placer and router tools. In LEF files, a cell containing ports is represented as a macro cell, and these ports are defined as the declared PINs of the macro. The initial step in this procedure is to define the ports and ensure that the correct class and use attributes are set for each port in compliance with the standard format.
+
+To effectively configure the ports, follow these steps in the Magic console:
+
+ Load your design's .mag file, specifically the layout for the inverter.
+
+ Navigate to the "Edit" menu and select "Text." This action will open a dialog box.
+
+   In the dialog box, double-click on the letter 'S' located at the I/O labels on the layout.
+
+   The text field will automatically populate with the correct string name and size for the port.
+
+   To confirm the port definition, ensure that the "Port enable" checkbox is selected, indicating that it functions as a port. Additionally, ensure that the "Default" checkbox remains unchecked.
+
+By following these steps, you can effectively define and configure ports in your layout, facilitating their recognition and utilization in the subsequent LEF file generation process.
+
+
+![Screenshot from 2023-09-17 00-01-35](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/33e9d867-a92a-4c6d-806f-b183f56c8c2f)
+
+
+# Standard cell LEF Generation
+Before the extraction Of LEF file we have to define the function of each port using the following commands:
+```
+port A class input
+port A use signal
+
+port Y class output
+port Y use signal
+
+port VPWR class inout
+port VPWR use power
+
+port VGND class inout
+port VPWR use ground
+```
+Now to extract file  following commands is used:
+```
+lef write
+```
+
+
+![Screenshot from 2023-09-17 00-07-37](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/3d7a79f9-cd8c-4607-a535-cf1bcd169719)
+
+# Integrating Custom cell in Openlane
+we should copy the extracted LEF file to picorv32a source directory, and also sky130_fd_sc_hd_typical.lib file from vsdcelldesign/libs ditrectory
+
+```
+cp sky130_vsdinv.lef /home/shivangi/OpenLane/designs/picorv32a/src/
+cp sky130_fd_sc_hd__* /home/shivangi/OpenLane/designs/picorv32a/src/
+```
+We have to modify config.tcl file also
+```
+
+# Design
+set ::env(DESIGN_NAME) "picorv32a"
+
+set ::env(VERILOG_FILES) "$::env(DESIGN_DIR)/src/picorv32a.v"
+
+set ::env(CLOCK_PORT) "clk"
+set ::env(CLOCK_NET) $::env(CLOCK_PORT)
+
+set ::env(GLB_RESIZER_TIMING_OPTIMIZATIONS) {1}
+
+set ::env(LIB_SYNTH) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(LIB_SLOWEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib"
+set ::env(LIB_FASTEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
+set ::env(LIB_TYPICAL) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+
+set ::env(EXTRA_LEFS) [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]
+
+set filename $::env(DESIGN_DIR)/$::env(PDK)_$::env(STD_CELL_LIBRARY)_config.tcl
+if { [file exists $filename] == 1} {
+	source $filename
+}
+```
+To invoke OpenLANE and run synthesis with the new standard cell library, use the following commands:
+
+```
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+add_lefs -src $lefs
+```
+![Screenshot from 2023-09-17 01-00-09](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/df24b1cf-a5b8-4a9b-8696-67387eac20ea)
+
+
+
+# Introduction to delay table
+Delay is a critical factor in chip design, significantly impacting various timing aspects. A cell's delay is influenced by factors like its size and threshold voltages, and it's often represented in the form of a timing table. Importantly, delay is not a fixed value; it varies based on factors such as input transitions and output loads.
+
+Delay tables contain data related to input slew and load capacitance, associated with different buffer sizes. These tables serve as crucial timing models. When algorithms work with these tables, they calculate buffer delays by considering input slew and load capacitance. In cases where precise data is unavailable, interpolation techniques are used to ensure accurate timing analysis and maintain signal integrity.
+
+![Screenshot from 2023-09-17 00-35-06](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/7e5c38a4-e012-4c8f-acb8-1e62f0bfd21b)
+
+Now we will run placement
+
+</details>
+
+<details><summary>Timing Analysis with ideal clocks using openSTA </summary>
+
+## SETUP TIME AND HOLDTIME
+In digital circuit design, "setup time" and "hold time" are critical timing parameters that play a pivotal role in determining when valid data needs to be stable concerning the clock signal. These parameters are especially significant in synchronous digital systems where data must be captured accurately on either the rising or falling edge of a clock signal.
+
+Here's a breakdown of setup time and hold time:
+
+- Setup Time (Tsu):
+        Setup time specifies the minimum duration before the clock edge (rising or falling) at which the input data must remain stable and valid.
+        In simpler terms, it's the time interval leading up to the clock edge during which the data input must stay unchanged to ensure correct data capture by the flip-flop or latch.
+        If data changes too close to the clock edge, there may not be sufficient time for the flip-flop to correctly sample the data, potentially leading to errors.
+
+- Hold Time (Th):
+Hold time represents the minimum duration after the clock edge during which the input data must remain stable and valid.
+It ensures that the data remains unchanged for a specified time following the clock edge to prevent data corruption.
+ Data changes occurring too soon after the clock edge can result in a hold time violation, which can disrupt the circuit's reliability.
+
+To sum it up, setup time and hold time are essential timing constraints that guarantee the accurate sampling of data by flip-flops and latches in digital circuits. Violating these constraints can lead to setup and hold time violations, potentially causing errors in the circuit's operation. Designers need to meticulously consider these parameters during the design and timing analysis phases to ensure the dependable and robust functioning of their digital systems.
+
+## Clock jitter
+
+Clock jitter, another critical consideration in digital circuit design, arises from various factors such as clock generator circuitry, noise, power supply fluctuations, and interference from nearby components. In terms of timing closure, accounting for jitter as a significant factor is essential, as it can significantly impact a circuit's performance.
+
+Period jitter is a crucial metric used to assess the stability of a clock signal. It quantifies the variation between the actual cycle time of a clock signal and the ideal period over a substantial number of randomly selected cycles (usually around 10,000 cycles). Period jitter can be expressed either as the average deviation (RMS value) across these cycles or as the difference between the maximum and minimum deviations within the selected group, known as peak-to-peak period jitter. Evaluating period jitter is essential to ensure that the timing of a clock signal remains stable under various operating conditions.
+
+Cycle-to-cycle jitter (C2C) measures the variation between two consecutive clock cycles within a randomly chosen set of cycles, typically around 10,000 cycles. Engineers often express C2C jitter as the maximum observed value within this group. This measurement helps capture high-frequency jitter variations that can impact a circuit's performance.
+
+In the frequency domain, phase noise is a phenomenon associated with clock jitter. It represents rapid and short-lived random phase fluctuations within a waveform. Analyzing phase noise in the frequency domain offers valuable insights into the quality and stability of a clock signal. Engineers can convert phase noise data into jitter values suitable for digital design analysis.
+
+Understanding and quantifying clock jitter, whether in terms of period jitter, cycle-to-cycle jitter, or phase noise, is essential for designing reliable digital circuits. By addressing the causes of jitter and incorporating appropriate design margins, engineers can ensure that their designs meet timing specifications and function reliably under various operating conditions.
+
+</details>
+<details><summary> Clock tree synthesis TritonCTS and signal integrity </summary> 
+	
+## Clock Tree Synthesis
+
+Clock Tree Synthesis is a technique for distributing the clock equally among all sequential parts of a VLSI design. The purpose of Clock Tree Synthesis is to reduce skew and delay. Clock Tree Synthesis is provided the placement data as well as the clock tree limitations as input. Clock Tree Synthesis (CTS) is the technique of balancing the clock delay to all clock inputs by inserting buffers/inverters along the clock routes of an ASIC design. 
+
+As a result, CTS is used to balance the skew and reduce insertion latency. Before Clock Tree Synthesis, all clock pins were driven by a single clock source. Clock tree synthesis includes both clock tree construction and clock tree balance.Clock tree inverters may be used to create a clock tree that maintains the correct transition (duty cycle), and clock tree buffers (CTB) can balance the clock tree to fulfill the skew and latency requirements.
+
+The significance of Clock Tree Synthesis (CTS) can be summarized as follows:
+
+- Synchronization in Digital ICs: In digital integrated circuits (ICs), clock signals play a fundamental role in synchronizing the operations of various components. They ensure that data is sampled or altered at precisely the right times, maintaining the integrity of digital operations.
+
+  - Preventing Timing Violations: Properly synchronized clocks are crucial for avoiding setup and hold time violations. These violations can occur if data transitions are not adequately synchronized with clock edges. CTS helps establish precise timing relationships, minimizing the risk of such violations and ensuring correct data processing.
+
+  - Managing Complex ICs: In the context of modern ICs, which can contain millions or even billions of transistors, efficient and reliable clock distribution becomes an increasingly daunting challenge. CTS plays a vital role in managing this complexity by optimizing how the clock signal is routed and distributed throughout the chip, ensuring that it reaches all parts of the design reliably and within specified timing constraints.
+ ![Screenshot from 2023-09-17 00-46-12](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/9fa1c0be-caa3-472f-aa50-ed72c8998a7c)
+
+CTS Buffering
+
+
+![Screenshot from 2023-09-17 00-47-05](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/525652d1-0da6-49e7-b23d-03ddfdad40af)
+
+Cross talk & Cross Net Shielding
+- Crosstalk: Unwanted interference between adjacent signal traces or conductors, causing signal degradation or errors.
+
+- Cross Net Shielding: Using shielding layers or materials to physically isolate and protect different signal nets from each other, reducing crosstalk and maintaining signal integrity.
+
+![Screenshot from 2023-09-17 00-49-53](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/4199e949-2683-482e-9312-71c00baebf7b)
+
+
+
+  ## LAB
+  Commands to run clock tree synthesis
+
+  ```
+run_cts
+write_verilog ./designs/picorv32a/picorv32a_cts.v
+
+```
+Since clock tree synthesis has not been performed yet, the analysis is with respect to ideal clocks and only setup time slack is taken into consideration. The slack value is the difference between data required time and data arrival time. The worst slack value must be greater than or equal to zero. If a negative slack is obtained, following steps may be followed:
+
+- Change synthesis strategy, synthesis buffering and synthesis sizing values
+- Review maximum fanout of cells and replace cells with high fanout
+
+
+
+  Commands
+
+ ```
+openroad
+read_lef <path of merge.nom.lef>
+read_def <path of def>
+write_db pico_cts.db
+read_db pico_cts.db
+read_verilog /home/parallels/OpenLane/designs/picorv32a/runs/RUN_09-09_11-20/results/synthesis/picorv32a.v
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+read_sdc /home/parallels/OpenLane/designs/picorv32a/src/my_base.sdc
+set_propagated_clock (all_clocks)
+report_checks -path_delay min_max -format full_clock_expanded -digits 4
+```
+
+![Screenshot from 2023-09-17 01-13-13](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/0754f4d3-ea2f-46a1-a7b2-ea05c633469b)
+
+![Screenshot from 2023-09-17 01-13-21](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/0dad3b25-be9b-422d-9e5e-2238ebd937fe)
+
+
+Commands to check clock buffers :
+```
+echo $::env(CTS_CLK_BUFFER_LIST)
+set $::env(CTS_CLK_BUFFER_LIST) [lreplace $::env(CTS_CLK_BUFFER_LIST) 0 0]
+echo $::env(CTS_CLK_BUFFER_LIST)
+```
+
+  
+</details>
+
+# Day 5
+
+## Final steps for RTL2GDS using tritonRoute and openSTA
+
+<details><summary> Routing and design rule check(DRC) </summary>
+
+
+
+</details>
+
