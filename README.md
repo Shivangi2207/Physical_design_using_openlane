@@ -1169,9 +1169,98 @@ echo $::env(CTS_CLK_BUFFER_LIST)
 
 ## Final steps for RTL2GDS using tritonRoute and openSTA
 
-<details><summary> Routing and design rule check(DRC) </summary>
+<details><summary> Final steps in RTL2GDS </summary>
 
+## Maze Routing and Lee's algorithm
+
+The maze-routing algorithm you are referring to, often used in the context of chip multiprocessors (CMPs) and grid-based mazes, is designed to efficiently find routes or paths between two locations while minimizing overhead. This algorithm is essential in the field of integrated circuit design and routing, where the goal is to connect various components on a chip with minimal resource utilization.
+There are four steps of routing operations:
+Global Routing:
+
+- Establishes a high-level path for each net.
+- Focuses on overall routing topology.
+- Avoids obstacles and congestion areas.
+
+Track Assignment:
+
+- Divides routing area into tracks or channels.
+-  Allocates tracks to specific nets.
+-   Considers routing layer constraints.
+
+Detail Routing:
+
+- Determines precise routing paths for each net.
+- Minimizes wirelength and avoids conflicts.
+- Adheres to design rules and constraints.
+
+Search and Repair:
+
+- Identifies and resolves routing issues.
+-   Handles design rule violations and congestion.
+-   May require backtracking and iterative adjustments.
+
+
+The Lee algorithm is a grid-based approach used for routing, particularly in chip design. It begins with designated source and target points and assigns labels to grid cells to find the shortest route between them, often favoring efficient L-shaped paths over zigzags. While valuable for global routing tasks, it can be time-consuming for complex designs with many pins. As a result, alternative algorithms have emerged to address scalability and specific routing challenges. The choice of routing method depends on the design's complexity and resource constraints.
+
+
+![Screenshot from 2023-09-17 01-29-07](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/128bde00-109f-4e8a-83b7-04b9798ba070)
+
+## DRC
+Design Rule Checking (DRC) is a vital step in the physical design process, ensuring that a design adheres to manufacturing constraints dictated by the chosen process technology. Each technology comes with its specific set of rules, which become more numerous and intricate as manufacturing technology advances to smaller nodes. DRC verifies compliance with these predefined process rules provided by foundries, safeguarding against chip failures. It plays a critical role in defining a chip's quality. Key DRCs involve physical wire attributes like minimum width, spacing, and pitch, and they address issues like signal short violations by utilizing additional metal layers while rigorously checking vias, width, and spacing.
+
+![Screenshot from 2023-09-17 01-37-27](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/33fd20f9-05d7-487a-a8c4-b903cae536f4)
 
 
 </details>
+
+<details><summary>Power distribution Network And Routing </summary>
+
+
+A Power Delivery Network (PDN) serves as the foundational infrastructure for ensuring a consistent and reliable supply of electrical power to all components within an integrated circuit (IC) or chip. Establishing a well-designed PDN is critical to guarantee that every device on the chip receives the necessary voltage levels with minimal noise and voltage drops.
+
+The initial step in PDN creation involves meticulous power grid planning. This encompasses determining the chip's overall power requirements, encompassing voltage levels (typically VDD and VSS, or ground) and the current demands of various functional blocks. Designers must also consider the topology of the power delivery network, including the arrangement of power rails, ground lines, power domains, and their interconnections.
+
+To enhance voltage stability and reduce noise, strategically positioned decapacitors (decaps) serve as local energy reserves. They play a vital role in compensating for abrupt changes in current demand, particularly during switching events. The selection and placement of decaps are guided by expected load variations and voltage fluctuations in different chip regions.
+ The following command is used to check the last stage the design ran:
+
+ ```
+echo $::env(CURRENT_DEF)
+```
+Now run the following command after the cts:
+
+```
+gen_pdn
+```
+
+## ROUTING
+
+Global Routing:
+- Purpose: Global routing serves as the first step in the routing process, defining the primary pathways for interconnections.
+- Objective: It aims to establish approximate wire locations and high-level connections between components.
+- Scope: Global routing focuses on the overall layout, determining the general routing topology.
+- Efficiency: It is typically faster and less detailed than detailed routing.
+- Use Cases: Global routing is crucial for creating a rough layout of interconnections, aiding in initial floorplanning, and providing an overview of the chip's connectivity.
+
+ Detailed Routing:
+        
+- Purpose: Detailed routing follows global routing and concentrates on the precise routing paths for individual nets.
+- Objective: It involves the selection of exact wires and vias, ensuring a functional and manufacturable layout.
+- Scope: Detailed routing deals with the fine-grained routing of each net, considering design constraints and manufacturing rules.
+- Precision: It ensures the highest level of precision and adherence to all constraints, including minimum spacing, width, and metal layer utilization.
+- Use Cases: Detailed routing is the final step in the physical design process, where each wire's exact path is determined to meet timing closure and comply with design specifications.
+       
+![Screenshot from 2023-09-17 01-44-23](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/2c1c7cc7-13ce-435b-acff-9506037b6296)
+
+</details>
+<details><?
+
+1### References
+1. https://www.vsdiat.com
+2. https://github.com/Devipriya1921/Physical_Design_Using_OpenLANE_Sky130
+3. https://chat.openai.com
+4. http://opencircuitdesign.com/magic/
+5. https://github.com/nickson-jose/vsdstdcelldesign/
+6. https://github.com/The-OpenROAD-Project/OpenLane
+7. https://github.com/Pruthvi-Parate/Advanced_Physical_Design_Using_OpenLANE
+
 
