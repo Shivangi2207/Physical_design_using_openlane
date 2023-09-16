@@ -1252,9 +1252,86 @@ Global Routing:
 ![Screenshot from 2023-09-17 01-44-23](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/2c1c7cc7-13ce-435b-acff-9506037b6296)
 
 </details>
-<details><?
+<details><summary>Triton Routing Features</summary>
 
-1### References
+## Features of TritonRoute:
+	
+- Honouring pre-processed route guides: TritonRoute respects pre-processed route guides, allowing designers to guide routing paths based on their specifications.
+
+- Assumes each net satisfies inter-guide connectivity: The tool assumes that each net already adheres to inter-guide connectivity requirements, simplifying the routing process.
+
+- Uses MILP-based panel routing scheme: TritonRoute employs a Mixed-Integer Linear Programming (MILP) approach for panel routing, which can provide optimal routing solutions.
+
+- Intra-layer parallel and inter-layer sequential routing framework: TritonRoute utilizes a combination of intra-layer parallel routing and inter-layer sequential routing to efficiently navigate multiple layers in the chip design, optimizing routing paths across different metal layers.
+
+
+## Pre-processed route guides:
+TritonRoute's approach to pre-processed route guides involves several key actions:
+
+- Initial Route Guide Analysis: The tool initially analyzes the directions specified in the preferred route guides. If it encounters non-directional guides, TritonRoute breaks them down into unit widths for routing clarity.
+
+- Guide Splitting: When non-directional routing guides are identified, TritonRoute splits them into unit widths, making them more manageable for the routing process.
+
+- Guide Merging: TritonRoute simplifies routing by merging guides that are orthogonal to the preferred guides, streamlining the routing path.
+
+- Guide Bridging: In cases where guides run parallel to the preferred routing guides, TritonRoute introduces an additional layer to bridge them, ensuring efficient routing within the preprocessed guides.
+
+- Inter Guide Connectivity: TritonRoute assumes that route guides for each net already satisfy inter-guide connectivity. This means guides should be on the same metal layer with touching guides or on neighboring metal layers with non-zero vertical overlap area (utilizing vias for connections). Additionally, each unconnected terminal (e.g., pins of standard cell instances) should have its pin shape overlapped by a routing guide, indicated by a black dot (pin) with a purple box (metal1 layer).
+
+![Screenshot from 2023-09-17 02-05-09](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/9c61c677-f32f-460d-be02-d3b5c4ad0565)
+
+
+## Inter guide connectivity and intra-inter layer routing:
+Inter-Guide Connectivity:
+
+1. Guides are considered connected if they:
+        - Share the same metal layer.
+        - Touch or intersect along their edges.
+        - Exist on neighboring metal layers with a non-zero vertical overlap area (using vias for connections).
+
+2. Intra-Inter Layer Routing:
+
+    - This involves routing signals between different layers of the chip.
+    - It ensures connections between different metal layers, often using vias.
+![Screenshot from 2023-09-17 02-04-27](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/4fae9a86-9cf9-459e-a02d-6ce90ef69fb2)
+
+
+
+## Handling connectivity:
+In handling connectivity within Triton Detailed Route, the following components and concepts are essential:
+
+Inputs:
+
+- LEF File: Contains information about library elements, including standard cells and their characteristics.
+- DEF File: Provides placement and location data for components in the chip.
+- Preprocessed Route Guides: Guides that specify routing directions and paths.
+- Constraint Files: These files include:
+- Route Guide Honoring: Enforces adherence to preferred routing guides.
+- Connectivity Constraints: Specify how components and guides should be interconnected.
+- Design Rules: Define rules and constraints for the chip's physical design.
+
+Access Point:
+
+An "Access Point" is an on-grid metal point located on the route guide.Its purpose is to facilitate connections to lower-layer segments, upper-layer pins, or I/O ports.Access Points play a critical role in enabling routing between different layers and components.
+
+Access Point Cluster:
+
+An "Access Point Cluster" refers to a collection of all access points.These access points are derived from various sources, including lower-layer segments, upper-layer guides, pins, or I/O ports.Access Point Clusters help streamline and organize the connectivity options for routing between different layers and components.
+
+These components and concepts are integral to Triton Detailed Route's ability to effectively handle and optimize connectivity in the chip design process. They ensure that routing solutions are both efficient in terms of wire length and via count while adhering to specified constraints and design rules.
+
+![Screenshot from 2023-09-17 02-03-45](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/9f00702f-e17a-46a1-8435-010e98d8116e)
+
+
+##  Topology Algorithm :
+
+   ![Screenshot from 2023-09-17 02-03-07](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/3ea7cc0a-fdf9-47bf-9577-29f0fb36135b)
+
+
+
+</details>
+
+## References
 1. https://www.vsdiat.com
 2. https://github.com/Devipriya1921/Physical_Design_Using_OpenLANE_Sky130
 3. https://chat.openai.com
