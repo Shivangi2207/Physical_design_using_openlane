@@ -1,7 +1,7 @@
 # Physical_design_using_openlane
 
 # Day 1
-<details><summary>Installtion of required software</summary>
+<details><summary>Installation of required software</summary>
 
 ## OpenLANE
 
