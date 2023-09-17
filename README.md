@@ -869,9 +869,9 @@ The above timing parameters can be computed by noting down various values from t
 
 
 ```
-Rise Transition : 2.25421 - 2.18636 = 0.006785 ns / 67.85ps
-Fall Transitio : 4.09605 - 4.05554 = 0.04051ns/40.51ps
-Cell Rise Delay : 2.21701 - 2.14989 = 0.06689ns/66.89ps 
+Rise Transition : 2.25182 - 2.19362 = 0.0582 ns / 58.20ps
+Fall Transitio : 4.10413 - 4.0631 = 0.04103ns/41.03ps
+Cell Rise Delay : 2.21701 - 2.15989 = 0.057211ns/ 57.21ps 
 Cell Fall Delay : 4.07816 - 4.05011 = 0.02805ns/28.05ps 
 
 ```
@@ -1128,6 +1128,9 @@ run_cts
 write_verilog ./designs/picorv32a/picorv32a_cts.v
 
 ```
+![Screenshot from 2023-09-17 18-43-42](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/9daf46fc-5838-422e-9e2f-f78f92ad65f9)
+
+
 Since clock tree synthesis has not been performed yet, the analysis is with respect to ideal clocks and only setup time slack is taken into consideration. The slack value is the difference between data required time and data arrival time. The worst slack value must be greater than or equal to zero. If a negative slack is obtained, following steps may be followed:
 
 - Change synthesis strategy, synthesis buffering and synthesis sizing values
@@ -1143,17 +1146,17 @@ read_lef <path of merge.nom.lef>
 read_def <path of def>
 write_db pico_cts.db
 read_db pico_cts.db
-read_verilog /home/parallels/OpenLane/designs/picorv32a/runs/RUN_09-09_11-20/results/synthesis/picorv32a.v
+read_verilog /home/shivangi/OpenLane/designs/picorv32a/runs/RUN_09-09_11-20/results/synthesis/picorv32a.v
 read_liberty $::env(LIB_SYNTH_COMPLETE)
-read_sdc /home/parallels/OpenLane/designs/picorv32a/src/my_base.sdc
+read_sdc /home/shivangi/OpenLane/designs/picorv32a/src/my_base.sdc
 set_propagated_clock (all_clocks)
 report_checks -path_delay min_max -format full_clock_expanded -digits 4
 ```
+![Screenshot from 2023-09-17 18-27-56](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/75577ece-be41-4a34-b742-fd3baef3a455)
 
-![Screenshot from 2023-09-17 01-13-13](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/0754f4d3-ea2f-46a1-a7b2-ea05c633469b)
+![Screenshot from 2023-09-17 18-28-11](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/d8113da7-25af-4d94-89db-e4d2d1b0df8b)
 
-![Screenshot from 2023-09-17 01-13-21](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/0dad3b25-be9b-422d-9e5e-2238ebd937fe)
-
+![Screenshot from 2023-09-17 18-28-22](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/8b21e0e0-ab3b-4b7a-a22e-cdf289275ac5)
 
 Commands to check clock buffers :
 ```
@@ -1231,6 +1234,16 @@ Now run the following command after the cts:
 ```
 gen_pdn
 ```
+
+
+![Screenshot from 2023-09-17 18-36-17](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/2e4cc1aa-1530-4c8b-ad58-530b30135fc5)
+
+![Screenshot from 2023-09-17 18-38-50](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/66a102e5-eb79-4106-a856-89d2ff83791f)
+
+After the Power Distribution Network (PDN) is generated, designers employ various analysis tools to simulate and validate its performance. These analyses encompass assessing voltage drop, IR (voltage drop due to resistance), electromigration, and other power-related concerns.
+To enhance the PDN's performance, designers may employ optimization techniques like buffer insertion, voltage islands, and voltage scaling.
+Once the chip's layout is finalized, designers initiate post-layout verification to ensure that the actual layout aligns with the PDN plan and design rules. Any disparities or problems discovered during this stage are addressed.
+Once the PDN is successfully generated, verified, and all design rules are met, the chip design is deemed ready for "tape-out." This means that the final layout data is sent to a semiconductor foundry for fabrication, marking a significant milestone in the chip manufacturing process.
 
 ## ROUTING
 
