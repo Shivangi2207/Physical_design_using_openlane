@@ -1046,6 +1046,7 @@ add_lefs -src $lefs
 
 
 
+
 # Introduction to delay table
 Delay is a critical factor in chip design, significantly impacting various timing aspects. A cell's delay is influenced by factors like its size and threshold voltages, and it's often represented in the form of a timing table. Importantly, delay is not a fixed value; it varies based on factors such as input transitions and output loads.
 
@@ -1054,6 +1055,15 @@ Delay tables contain data related to input slew and load capacitance, associated
 ![Screenshot from 2023-09-17 00-35-06](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/7e5c38a4-e012-4c8f-acb8-1e62f0bfd21b)
 
 Now we will run placement
+
+After placement we will see sky130_vsdinv is in the layout or not:
+```
+magic -T /home/shivangi/OpenLane/vsdstdcelldesign/libs/sky130A.tech lef read /home/shivangi/OpenLane/designs/picorv32a/runs/RUN_2023.09.18_08.10.36/tmp/merged.nom.lef def read /home/shivangi/OpenLane/designs/picorv32a/runs/RUN_2023.09.18_08.10.36/results/floorplan/picorv32.def
+
+```
+
+![Screenshot from 2023-09-18 16-53-07](https://github.com/Shivangi2207/Physical_design_using_openlane/assets/140998647/35ca7b12-b121-44f2-8d3e-f4fbad1670bb)
+
 
 </details>
 
