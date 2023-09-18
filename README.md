@@ -994,7 +994,7 @@ port VPWR class inout
 port VPWR use power
 
 port VGND class inout
-port VPWR use ground
+port VGND use ground
 ```
 Now to extract file  following commands is used:
 ```
